@@ -54,10 +54,11 @@ if __name__ == "__main__":
 		exit("Image dimensions already match CRC.")
 	except subprocess.CalledProcessError as e:
 		error = e.output.decode()
-		if "CRC error in chunk IHDR" not in error:
+		if "this is neither a PNG" in error:
+			exit("Invalid PNG file.")
+		elif "CRC error in chunk IHDR" not in error:
 			exit("Image dimensions already match CRC.")
-		result = error
-		crc = result.split("expected ")[1].split(")")[0]
+		crc = error.split("expected ")[1].split(")")[0]
 
 	# Crack CRC
 	print(f"Cracking {filename} for CRC {crc}...")
