@@ -50,10 +50,13 @@ if __name__ == "__main__":
 
 	# Get CRC from pngcheck
 	try:
-		subprocess.check_output(["pngcheck", "-v", filename])
+		subprocess.check_output(["pngcheck", filename])
 		exit("Image dimensions already match CRC.")
 	except subprocess.CalledProcessError as e:
-		result = e.output.decode()
+		error = e.output.decode()
+		if "CRC error in chunk IHDR" not in error:
+			exit("Image dimensions already match CRC.")
+		result = error
 		crc = result.split("expected ")[1].split(")")[0]
 
 	# Crack CRC
